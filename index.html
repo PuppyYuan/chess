@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            canvas{
+                display:block; 
+                margin: 50px auto; 
+                cursor: pointer;
+                box-shadow: 0 0 2px #666,
+                    5px 5px 10px #aaa;
+                }
+            
+        </style>
+    </head>
+    <body>
+        <canvas id="chess" width="450" height="450"></canvas>
+        <script>
+            var chess = document.getElementById('chess'),
+                context = chess.getContext('2d'),
+                chessBoard = [],
+                me = true,
+                allWins = [],
+                myChess = [],
+                comChess = [],
+                count = 0,
+                over = false;
+                
+                // 初始化所有的赢法， 三维数组
+                for(var i = 0; i < 15; i++){
+                    allWins[i] = [];
+                    for(var j = 0; j < 15; j++){
+                        allWins[i][j] = []
+                    }
+                }    
+                // 横排的赢法
+                for(var i = 0; i < 15; i++){
+                    for(var j = 0; j < 11; j++){
+                        for(var k = 0; k < 5; k++){
+                            allWins[i][j + k][count] = true; 
+                        }
+                        count++;
+                    }
+                }
+                // 竖排的赢法
+                for(var i = 0; i < 15; i++){
+                    for(var j = 0; j < 11; j++){
+                        for(var k = 0; k < 5; k++){
+                            allWins[j + k][i][count] = true; 
+                        }
+                        count++;
+                    }
+                }
+                // 正斜线的赢法
+                for(var i = 0; i < 11; i++){
+                    for(var j = 0; j < 11; j++){
+                        for(var k = 0; k < 5; k++){
+                            allWins[i + k][j + k][count] = true; 
+                        }
+                        count++;
+                    }
+                }
+                // 反斜线的赢法
+                for(var i = 0; i < 11; i++){
+                    for(var j = 14; j > 3; j--){
+                        for(var k = 0; k < 5; k++){
+                            allWins[i + k][j - k][count] = true; 
+                        }
+                        count++;
+                    }
+                }
+                
+                for(var i = 0; i < count; i++){
+                    myChess[i] = 0;
+                    comChess[i] = 0;
+                }
+                
+                for(var i = 0; i < 15; i++){
+                    chessBoard[i] = [];
+                    for(var j = 0; j < 15; j++){
+                        chessBoard[i][j] = 0;
+                    }
+                }
+                
+                chess.addEventListener('click', play);
+                
+                context.strokeStyle = "#cecece";
+                
+                // context.fillStyle = "#f0f0f0";
+                // context.fillRect(0, 0, 450, 450);
+                
+            var logo = new Image();
+                logo.src = "images/bird.png";
+                logo.addEventListener('load', function(){
+                    context.drawImage(logo, 164, 164);   
+                    
+                    // 画棋盘
+                    for(var i = 0; i < 15; i++) {
+                        context.moveTo(15, 30 * i + 15);
+                        context.lineTo(435, 30 * i + 15);
+                        context.stroke();
+                        
+                        context.moveTo(30 * i + 15, 15);
+                        context.lineTo(30 * i + 15, 435);
+                        context.stroke();
+                    } 
+                });
+                
+                function play(e) {
+                    var x = e.offsetX,
+                        y = e.offsetY,
+                        i = Math.floor(x / 30),
+                        j = Math.floor(y / 30);
+                        
+                        if(over){
+                            return;
+                        }
+                        
+                        
+                        if(!me){
+                            return;
+                        }
+                        
+                        if(chessBoard[i][j] === 0){
+                            oneStep(i, j, me);
+                            for(var k = 0; k < count; k++){
+                                if(allWins[i][j][k]){
+                                    myChess[k]++;
+                                    comChess[k] = 6;
+                                    if(myChess[k] == 5){
+                                        over = true;
+                                        alert('你赢了');
+                                    }
+                                }
+                            }
+                            
+                            if(!over){
+                                me = !me;
+                                computerAI();    
+                            }
+                            
+                        }else{
+                            alert('该位置已经有棋子了!');
+                        }          
+                }
+                
+                function oneStep(i, j, me){
+                    var grad  = context.createRadialGradient(30 * i + 17, 30 * j + 13, 3, 30 * i + 17,30 * j + 13, 12);
+                    context.beginPath();
+                           
+                    if(me){
+                        grad.addColorStop(0,'#fff');
+                        grad.addColorStop(1,'#333');
+                        chessBoard[i][j] = 1;
+                    }else{
+                        grad.addColorStop(0,'#eee');
+                        grad.addColorStop(1,'#CDAF95');
+                        chessBoard[i][j] = 2;
+                    }
+                            
+                    context.arc(30 * i + 15, 30 * j + 15, 13, 0, 2 * Math.PI);
+                    context.fillStyle = grad;
+                    context.stroke();
+                    context.fill();
+                }
+                
+                function computerAI(){
+                    var myScore = [], comScore = [],max = 0,u = 0,v = 0;
+                    for(var i = 0; i < 15; i++){
+                        myScore[i] = [];
+                        comScore[i] = [];
+                        for(var j = 0; j < 15; j++){
+                            myScore[i][j] = 0;
+                            comScore[i][j] = 0;
+                        }
+                    }
+                    
+                    for(var i = 0; i < 15; i++){
+                        for(var j = 0; j< 15; j++){
+                            if(chessBoard[i][j] === 0){
+                                for(var k = 0; k < count; k++){
+                                    if(allWins[i][j][k]){
+                                        if(myChess[k] == 1){
+                                            myScore[i][j] += 200;
+                                        }else if(myChess[k] == 2){
+                                            myScore[i][j] += 600;
+                                        }else if(myChess[k] == 3){
+                                            myScore[i][j] += 2000;
+                                        }else if(myChess[k] == 4){
+                                            myScore[i][j] += 10000;
+                                        }
+                                        
+                                        if(comChess[k] == 1){
+                                            comScore[i][j] += 220;
+                                        }else if(comChess[k] == 2){
+                                            comScore[i][j] += 420;
+                                        }else if(comChess[k] == 3){
+                                            comScore[i][j] += 2100;
+                                        }else if(comChess[k] == 4){
+                                            comScore[i][j] += 20000;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            console.log('myScore' + myScore[i][j] + ' ' + i + ' ' + j)
+                            console.log('comScore' + comScore[i][j] + ' ' + i + ' ' + j)
+                            
+                            if(myScore[i][j] > max){
+                                max = myScore[i][j];
+                                u = i;
+                                v = j;
+                            }else if(myScore[i][j] == max){
+                                if(comScore[i][j] > comScore[u][v]){
+                                    u = i;
+                                    v = j;
+                                }
+                            }                 
+                        }
+                                               
+                    }
+                    
+                    console.log('max' + max + ' ' + u + ' ' + v)
+                    
+                    oneStep(u, v, me);
+                    for(var k = 0; k < count; k++){
+                        if(allWins[u][v][k]){
+                            comChess[k]++;
+                            myChess[k] = 6;
+                            if(comChess[k] == 5){
+                                over = true;
+                                alert('计算机赢了');
+                            }
+                        }
+                    }
+                    
+                    me = !me; 
+                    
+                }
+            
+        </script>
+    </body>
+</html>

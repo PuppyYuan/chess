@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style>
+        html, body{margin: 0; padding: 0;}
+        canvas {display: block;cursor: pointer;}
+    </style>
+</head>
+
+<body>
+    <canvas id="ball"></canvas>
+    <script>
+        var clockWidth = window.innerWidth;
+        var clockHeight = window.innerHeight;
+        var canvas = document.getElementById('ball');
+        var context = canvas.getContext('2d');
+        var ball = {x: 20, y: 20, g: 2, vx: 8, vy: 0, r: 20};
+        
+        canvas.width = clockWidth;
+        canvas.height = clockHeight;
+        
+        context.fillStyle = '#8B4726';
+        
+        function render(ctx){
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        function update(){
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.vy += ball.g;
+            
+            if(ball.y >= clockHeight - ball.r){
+                ball.vy = - ball.vy  * 4 / 5;
+                ball.y = clockHeight - ball.r;
+            }
+            
+            if(ball.x >= clockWidth - ball.r){
+                ball = {x: 20, y: 20, g: 2, vx: 8, vy: 0, r: 20};
+            }
+        }
+        
+        setInterval(function(){
+            render(context);
+            update();
+        }, 60);
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style>
+        
+        canvas {
+            display: block;
+            margin: 50px auto 0;
+            cursor: pointer;
+            box-shadow: 0 0 2px #666, 5px 5px 10px #aaa;
+        }
+        
+        #tools {
+            margin: 10px auto;
+        }
+        
+        #cleanRect {
+            float: right;
+            margin-right: 20px;
+            background: #0af;
+            outline: 0;
+            border: 0;
+            color: #fff;
+            height: 40px;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .color-btn {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #fff;
+            cursor: pointer;
+        }
+        
+        .color-black{
+            background: #000;
+        }
+        
+        .color-green{
+            background: #0f0;
+        }
+        
+        .color-red{
+            background: #f00;
+        }
+        
+        .color-yellow{
+            background: #ff0;
+        }
+        
+        .color-blue{
+            background: #00f;
+        }
+        
+        .selected{
+            border: 2px solid violet;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="draw"></canvas>
+    <div id="tools">
+        <div class="color-btn color-black selected"></div>
+        <div class="color-btn color-green"></div>
+        <div class="color-btn color-red"></div>
+        <div class="color-btn color-yellow"></div>
+        <div class="color-btn color-blue"></div>
+        <input type="button" id="cleanRect" value="清空" />
+    </div>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/component.js"></script>
+    <script src="js/draw.js"></script>
+</body>
+
+</html>
