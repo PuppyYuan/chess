@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <style>
+            html,body,h1, h3, p{margin: 0; padding: 0;}
+            #content{display:block;box-shadow: 0 0 2px #666,5px 5px 10px #aaa;background: #f0f6f2;text-align: center;position: relative;}
+            h1{font-family: 微软雅黑;font-size: 56px;color: #00ff72;padding-top: 100px;font-weight: normal;}
+            h3{font-family: 微软雅黑;font-size: 40px;color: #747474;padding-top: 40px;font-weight: normal;}
+            p{font-family: 微软雅黑;font-size: 24px;color: #747474;padding-top: 20px;}
+            #remark{text-align: center; position: absolute;bottom: 20px;left: 0;height: 24px;line-height: 24px;font-family: 微软雅黑;font-size: 18px;color: #747474;width: 100%;}
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <h1 id="ttl1">农人邦  nongren8.com</h1>
+            <h3 id="ttl2">欢迎访问农人邦！</h3>
+            <p>建设中，敬请期待...</p>
+            <div id="remark">粤ICP备16023568号-1</div>
+        </div>
+        <script>
+            
+            var content = document.getElementById('content');
+            var ttl1 = document.getElementById('ttl1');
+            var ttl2 = document.getElementById('ttl2');
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            
+            content.style.marginTop = '50px';
+            content.style.marginLeft = '50px';
+            content.style.width = (width - 100) + 'px';
+            content.style.height = (height - 100) + 'px';
+            
+            
+            if(width < 600){
+                ttl1.style.fontSize = '40px';
+                ttl1.style.paddingTop = '40px';
+                ttl2.style.fontSize = '30px';
+                content.style.marginTop = '20px';
+                content.style.marginLeft = '20px';
+                content.style.width = (width - 40) + 'px';
+                content.style.height = (height - 40) + 'px';
+            }
+            
+            
+        </script>
+    </body>
+</html>
