@@ -1,6 +1,6 @@
-var canvasWidth = 400;
-var canvasHeight = 800;
-var blockWidth = 20;
+var canvasWidth = 300;
+var canvasHeight = 600;
+var blockWidth = 15;
 var canvas = document.getElementById('eros');
 var context = canvas.getContext('2d');
 var board = [];
@@ -56,17 +56,41 @@ function getDirection(e) {
 function moveShape(e) {
     var direction = getDirection(e)
     if (direction == 'right') {
-
-        console.log('I am right');
+        for (var i = 0; i < 4; i++) {
+            if (t[2 * i] + rectX + 1 >= 20 || board[2 * i + rectX + 1] == 1) {
+                return;
+            }
+        }
+        rectX += 1;
     } else if (direction == 'left') {
-
-        console.log('I am left');
+        for (var i = 0; i < 4; i++) {
+            if (t[2 * i] + rectX - 1 < 0 || board[2 * i + rectX - 1] == 1) {
+                return;
+            }
+        }
+        rectX -= 1;
     } else if (direction == 'up') {
 
-        console.log('I am up');
-    } else if (direction == 'down') {
+        var mleft = 0;
+        for (var i = 0; i < 4; i++) {
+            if (t[i * 2] + rectX > mleft) {
+                mleft = rectX;
+            }
+        }
 
-        console.log('I am down');
+        if (rotate == 3) {
+            rotate = 0;
+        }
+        else {
+            rotate += 1;
+        }
+        t = shape[rotate];
+
+        rectX = mleft;
+
+    } else if (direction == 'down') {
+        clearInterval(tid);
+        tid = setInterval(drawBoard, 50);
     }
 }
 
@@ -124,7 +148,7 @@ function drawBoard() {
     shape = shaps[sp - 1];
     t = shape[rotate];
     draw();
-
+    
 }
 
 function draw() {
@@ -141,12 +165,14 @@ function draw() {
         }
     }
     rectY += 1;
-    
+
 }
 
 tid = setInterval(drawBoard, 500);
 
 function checkBottom() {
+
+
     if (topTrue) {
         startRun = true;
         topTrue = false;
@@ -164,33 +190,44 @@ function checkBottom() {
         currentShapeOnBotton();
         return true;
     } else {
-        if(shapeXY[0][0] == 39 || shapeXY[1][0] == 39 || shapeXY[2][0] == 39 || shapeXY[3][0] == 39){
+        if (shapeXY[0][0] == 39 || shapeXY[1][0] == 39 || shapeXY[2][0] == 39 || shapeXY[3][0] == 39) {
             currentShapeOnBotton();
             return true;
         }
+
+        if ((board[shapeXY[0][0] + 1][shapeXY[0][1]] + board[shapeXY[1][0] + 1][shapeXY[1][1]]
+            + board[shapeXY[2][0] + 1][shapeXY[2][1]] + board[shapeXY[3][0] + 1][shapeXY[3][1]]
+            >= 1)) {
+            currentShapeOnBotton();
+            return true;
+        }
+
+        topTrue = false;
+        return false;
+
     }
 }
 
-function currentShapeOnBotton(){
-    board[shape[0][0]][shape[0][1]] = 1;
-    board[shape[1][0]][shape[1][1]] = 1;
-    board[shape[2][0]][shape[2][1]] = 1;
-    board[shape[3][0]][shape[3][1]] = 1;
-    
-    if(!clearRow()){
+function currentShapeOnBotton() {
+    board[shapeXY[0][0]][shapeXY[0][1]] = 1;
+    board[shapeXY[1][0]][shapeXY[1][1]] = 1;
+    board[shapeXY[2][0]][shapeXY[2][1]] = 1;
+    board[shapeXY[3][0]][shapeXY[3][1]] = 1;
+
+    if (!clearRow()) {
         return;
     }
-    
+
     startRun = true;
     topTrue = true;
     rectX = 9;
     rectY = 0;
     randomShape = Math.floor(Math.random() * 7 + 1);
-    // clearInterval(tid);
-    // tid=setInterval(drawBoard, 500);
+    clearInterval(tid);
+    tid=setInterval(drawBoard, 500);
 }
 
-function  clearRow() {
+function clearRow() {
     return true;
 }
 
